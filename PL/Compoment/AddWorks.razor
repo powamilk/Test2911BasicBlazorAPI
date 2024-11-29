@@ -1,0 +1,68 @@
+﻿@page "/addworks"
+@using BUS.ViewModel
+@using PL.Service.Interface
+@inject IWorkService WorkService
+@inject NavigationManager NavigationManager
+
+<h3>AddWorks</h3>
+
+<EditForm Model="newWork" OnValidSubmit="HanldeSubmit">
+    <div class="mb-3">
+        <label for="UserId" class="form-label">User</label>
+        <InputNumber id="UserId" class="form-control" @bind-Value="newWork.UserId" />
+    </div>
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="newWork.Title" />
+    </div>
+    <div class="mb-3">
+        <label for="Description class="form-label">Description</label>
+        <InputText id="Description" class="form-control" @bind-Value="newWork.Description" />
+    </div>
+    <div class="mb-3">
+        <label for="Status" class="form-label">Trạng Thái</label>
+        <InputSelect id="status" class="form-select" @bind-Value="newWork.Status">
+            <option value="pending">pending</option>
+            <option value="in_progress">in_progress</option>
+            <option value="completed">completed</option>
+            <option value="overdue">overdue</option>
+        </InputSelect>
+    </div>
+    <div class="mb-3">
+        <label for="Priority" class="form-label">Độ ưu tiên</label>
+        <InputSelect id="priority" class="form-select" @bind-Value="newWork.Priority">
+            <option value="pending">pending</option>
+            <option value="1">Cao</option>
+            <option value="2">Trung bình</option>
+            <option value="3">Thấp</option>
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm</button>
+    <button type="button" class="btn btn-primary" @onclick="Goback">Hủy</button>
+</EditForm>
+
+@code {
+    private WorkCreateVM newWork = new WorkCreateVM
+        {
+            Status = "pending",
+            Priority = 2,
+        };
+
+    private async Task HanldeSubmit()
+    {
+        try
+        {
+            await WorkService.CreateAsync(newWork);
+            NavigationManager.NavigateTo("/worklist");
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Lỗi: {ex.Message}");
+        }
+    }
+
+    private void Goback()
+    {
+        NavigationManager.NavigateTo("/worklist");
+    }
+}

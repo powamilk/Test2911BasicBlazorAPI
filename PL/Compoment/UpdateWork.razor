@@ -1,0 +1,91 @@
+﻿@page "/edit/{id:int}"
+@using BUS.ViewModel
+@using PL.Service.Interface
+@inject IWorkService WorkService
+@inject NavigationManager NavigationManager
+<h3>UpdateWork</h3>
+
+@if (workUpdate == null)
+{
+    <p>Đang load</p>
+}
+else
+{
+    <EditForm Model="workUpdate" OnValidSubmit="HanldeSubmit">
+        <div class="mb-3">
+            <label for="WorkId" class="form-label">WorkId</label>
+            <InputNumber id="WorkId" class="form-control" @bind-Value="workUpdate.WorkId" />
+        </div>
+        <div class="mb-3">
+            <label for="UserId" class="form-label">User</label>
+            <InputNumber id="UserId" class="form-control" @bind-Value="workUpdate.UserId" />
+        </div>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <InputText id="title" class="form-control" @bind-Value="workUpdate.Title" />
+        </div>
+        <div class="mb-3">
+            <label for="Description class="form-label">Description</label>
+            <InputText id="Description" class="form-control" @bind-Value="workUpdate.Description" />
+        </div>
+        <div class="mb-3">
+            <label for="Status" class="form-label">Trạng Thái</label>
+            <InputSelect id="status" class="form-select" @bind-Value="workUpdate.Status">
+                <option value="pending">pending</option>
+                <option value="in_progress">in_progress</option>
+                <option value="completed">completed</option>
+                <option value="overdue">overdue</option>
+            </InputSelect>
+        </div>
+        <div class="mb-3">
+            <label for="Priority" class="form-label">Độ ưu tiên</label>
+            <InputSelect id="priority" class="form-select" @bind-Value="workUpdate.Priority">
+                <option value="pending">pending</option>
+                <option value="1">Cao</option>
+                <option value="2">Trung bình</option>
+                <option value="3">Thấp</option>
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-primary" @onclick="Goback">Hủy</button>
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    private WorkUpdateVM workUpdate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var work = await WorkService.GetByIdAsync(Id);
+        workUpdate = new WorkUpdateVM
+            {
+                UserId = work.UserId,
+                Title = work.Title,
+                Description = work.Description,
+                Status = work.Status,
+                Priority = work.Priority
+            };
+    }
+
+    private async Task HanldeSubmit()
+    {
+        try
+        {
+            await WorkService.UpdateAsync(Id, workUpdate);
+            NavigationManager.NavigateTo("/worklist");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi: {ex.Message}");
+        }
+    }
+
+    private void Goback()
+    {
+        NavigationManager.NavigateTo("/worklist");
+    }
+
+}

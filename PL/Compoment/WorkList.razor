@@ -1,0 +1,87 @@
+﻿@page "/worklist"
+@using BUS.ViewModel
+@using PL.Service.Interface
+@inject IWorkService WorkService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+@if(works == null)
+{
+    <p>Đang load</p>
+}
+else if (!works.Any())
+{
+    <p>Kho có work nào </p>
+}
+else{
+    <h3>WorkList</h3>
+    <div class="d-flex" justify-content-between mb-3>
+        <button class="btn btn-success" @onclick="AddWork">Thêm works</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Tiêu đề</th>
+                <th>Mô tả</th>
+                <th>Trạng Thái</th>
+                <th>Ưu tiên</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var work in works)
+            {
+                <tr>
+                    <td>@work.UserId</td>
+                    <td>@work.Title</td>
+                    <td>@work.Description</td>
+                    <td>@work.Status</td>
+                    <td>@work.Priority</td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="() => ViewDetail(work.WorkId) ">Xem chi tiết</button>
+                        <button class="btn btn-secondary" @onclick="() => ConfirmDelete(work.WorkId) ">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private IEnumerable<WorkVM> works; /* = new List<WorkVM>(); */
+
+    protected override async Task OnInitializedAsync()
+    {
+        works = await WorkService.GetAllAsync();
+    }
+
+    private void AddWork()
+    {
+        NavigationManager.NavigateTo("/addworks");
+    }
+
+    private void ViewDetail(int id)
+    {
+        NavigationManager.NavigateTo($"/viewdetailwork/{id}");
+    }
+
+    private async Task ConfirmDelete(int id)
+    {
+        var confirm = await JSRuntime.InvokeAsync<bool>(
+            "confirm", 
+             new object[] { $"Bạn có muốn xóa Công việc này ko (ID: {id})" }
+        );
+        if(confirm)
+        {
+            await DeleteWork(id);
+        }
+    }
+
+    private async Task DeleteWork(int id)
+    {
+        await WorkService.DeleteAsync(id);
+        works = await WorkService.GetAllAsync();
+    }
+}

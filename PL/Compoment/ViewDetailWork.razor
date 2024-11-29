@@ -1,0 +1,48 @@
+﻿@page "/viewdetailwork/{id:int}"
+@using BUS.ViewModel
+@using PL.Service.Interface
+
+@inject IWorkService WorkService
+@inject NavigationManager NavigationManager
+
+@if(work == null)
+{
+    <p>Đang load</p>
+}
+else
+{
+    <h3>ViewDetailWork</h3>
+    <div class="card-body">
+        <p><strong>WorkID</strong>@work.WorkId</p>
+        <p><strong>User</strong>@work.UserId</p>
+        <p><strong>Title</strong>@work.Title</p>
+        <p><strong>Description</strong>@work.Description</p>
+        <p><strong>Status</strong>@work.Status</p>
+        <p><strong>Priority</strong>@work.Priority</p>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" @onclick="Edit">Sửa</button>
+        <button class="btn btn-secondary" @onclick="Goback">Quay lại</button>
+    </div>
+}
+
+
+@code {
+    [Parameter] 
+    public int Id { get; set; }
+    private WorkVM work;
+
+    protected override async Task OnInitializedAsync()
+    {
+        work = await WorkService.GetByIdAsync(Id);
+    }
+
+    private void Goback()
+    {
+        NavigationManager.NavigateTo("/worklist");
+    }
+    private void Edit()
+    {
+        NavigationManager.NavigateTo($"/edit/{Id}");
+    }
+}
