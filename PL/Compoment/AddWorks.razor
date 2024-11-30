@@ -37,6 +37,10 @@
             <option value="3">Thấp</option>
         </InputSelect>
     </div>
+    <div class="mb-3">
+        <label for="imageFile" class="form-label">Tải lên ảnh</label>
+        <InputFile id="imageFile" class="form-control" OnChange="HandleFileSelected" />
+    </div>
     <button type="submit" class="btn btn-primary">Thêm</button>
     <button type="button" class="btn btn-primary" @onclick="Goback">Hủy</button>
 </EditForm>
@@ -47,6 +51,7 @@
             Status = "pending",
             Priority = 2,
         };
+    private IBrowserFile selectedFile;
 
     private async Task HanldeSubmit()
     {
@@ -64,5 +69,21 @@
     private void Goback()
     {
         NavigationManager.NavigateTo("/worklist");
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (selectedFile != null)
+        {
+            var imageUrl = await WorkService.UploadImageAsync(selectedFile);
+            newWork.ImageUrl = imageUrl;
+        }
+        await WorkService.CreateAsync(newWork);
+        NavigationManager.NavigateTo("/work-list");
     }
 }

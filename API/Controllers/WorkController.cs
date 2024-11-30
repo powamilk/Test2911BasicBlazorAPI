@@ -65,6 +65,32 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Không có file nào được chọn.");
+            }
+            var fileName = Path.GetFileName(file.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Ok(new { FilePath = $"/images/{fileName}" }); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi lưu ảnh: {ex.Message}");
+            }
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id )
         {

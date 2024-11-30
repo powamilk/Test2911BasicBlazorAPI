@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BUS.ViewModel
+namespace PL.ViewModel
 {
     public class WorkUpdateVM
     {

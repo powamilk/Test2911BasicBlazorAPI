@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BUS.ViewModel
+namespace PL.ViewModel
 {
     public class WorkCreateVM
     {
@@ -16,5 +16,6 @@ namespace BUS.ViewModel
         public DateTime? DueDate { get; set; }
         public string? Status { get; set; }
         public int? Priority { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

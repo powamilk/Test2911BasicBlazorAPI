@@ -32,6 +32,7 @@ namespace BUS.Service.Implement
             await _repo.DeleteAsync(id);
         }
 
+
         public async Task<IEnumerable<WorkVM>> GetAllAsync()
         {
             var work = await _repo.GetAllAsync();

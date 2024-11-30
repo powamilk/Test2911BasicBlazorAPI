@@ -16,5 +16,6 @@ namespace BUS.ViewModel
         public DateTime? DueDate { get; set; }
         public string? Status { get; set; }
         public int? Priority { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

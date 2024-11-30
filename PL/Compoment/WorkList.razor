@@ -5,6 +5,10 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
+
+<div class="d-flex" justify-content-between mb-3>
+    <button class="btn btn-success" @onclick="AddWork">Thêm works</button>
+</div>
 @if(works == null)
 {
     <p>Đang load</p>
@@ -15,9 +19,6 @@ else if (!works.Any())
 }
 else{
     <h3>WorkList</h3>
-    <div class="d-flex" justify-content-between mb-3>
-        <button class="btn btn-success" @onclick="AddWork">Thêm works</button>
-    </div>
     <table class="table">
         <thead>
             <tr>
