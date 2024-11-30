@@ -1,0 +1,62 @@
+﻿@page "/users/{userId}/edit"
+@using BUS.ViewModel.User
+@using PL.Service.Interface
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Chỉnh sửa người dùng</h3>
+
+<EditForm Model="updateUser" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <InputText id="Email" class="form-control" @bind-Value="updateUser.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <InputText id="Name" class="form-control" @bind-Value="updateUser.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Status" class="form-label">Status</label>
+        <InputSelect id="Status" class="form-control" @bind-Value="updateUser.Status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="PhoneNumber" class="form-label">Phone Number</label>
+        <InputText id="PhoneNumber" class="form-control" @bind-Value="updateUser.PhoneNumber" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Cập nhật người dùng</button>
+</EditForm>
+
+@code {
+    [Parameter] public int UserId { get; set; }
+    private UserUpdateVM updateUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await UserService.GetByIdAsync(UserId);
+        updateUser = new UserUpdateVM
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                Name = user.Name,
+                Status = user.Status,
+                PhoneNumber = user.PhoneNumber
+            };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await UserService.UpdateAsync(UserId, updateUser);
+        NavigationManager.NavigateTo("/users");
+    }
+}

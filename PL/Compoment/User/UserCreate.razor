@@ -1,0 +1,48 @@
+﻿@page "/users/create"
+@using BUS.ViewModel.User
+@using PL.Service.Interface
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Thêm người dùng</h3>
+
+<EditForm Model="newUser" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <InputText id="Email" class="form-control" @bind-Value="newUser.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <InputText id="Name" class="form-control" @bind-Value="newUser.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Status" class="form-label">Status</label>
+        <InputSelect id="Status" class="form-control" @bind-Value="newUser.Status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="PhoneNumber" class="form-label">Phone Number</label>
+        <InputText id="PhoneNumber" class="form-control" @bind-Value="newUser.PhoneNumber" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Thêm người dùng</button>
+</EditForm>
+
+@code {
+    private UserCreateVM newUser = new UserCreateVM();
+
+    private async Task HandleValidSubmit()
+    {
+        await UserService.CreateAsync(newUser);
+        NavigationManager.NavigateTo("/users"); 
+    }
+}

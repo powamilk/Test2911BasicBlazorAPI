@@ -1,0 +1,51 @@
+﻿@page "/users/{userId}"
+@using BUS.ViewModel.User
+@using PL.Service.Interface
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Chi tiết người dùng</h3>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <p>@user.Email</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <p>@user.Name</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <p>@user.Status</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <p>@user.PhoneNumber</p>
+    </div>
+
+    <button class="btn btn-primary" @onclick="EditUser">Sửa</button>
+}
+
+@code {
+    [Parameter] public int UserId { get; set; }
+    private UserVM user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetByIdAsync(UserId);
+    }
+
+    private void EditUser()
+    {
+        NavigationManager.NavigateTo($"/users/{UserId}/edit");
+    }
+}
