@@ -15,7 +15,6 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("https://localhost:7130/api/")
 });
 builder.Services.AddScoped<IWorkService, WorkService>();
-builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
