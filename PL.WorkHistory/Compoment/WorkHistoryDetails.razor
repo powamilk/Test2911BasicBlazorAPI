@@ -1,0 +1,59 @@
+﻿@page "/workhistory/details/{Id}"
+@using BUS.ViewModel.WorkHistory
+@using PL.WorkHistory.Service
+@inject IWorkHistoryService WorkHistoryService
+@inject NavigationManager Navigation
+
+<PageTitle>WorkHistory Details</PageTitle>
+
+<h3>WorkHistory Details</h3>
+
+@if (workHistory != null)
+{
+    <div>
+        <strong>WorkId:</strong> @workHistory.WorkId
+    </div>
+    <div>
+        <strong>UserId:</strong> @workHistory.UserId
+    </div>
+    <div>
+        <strong>Previous Status:</strong> @workHistory.PreviousStatus
+    </div>
+    <div>
+        <strong>Current Status:</strong> @workHistory.CurrentStatus
+    </div>
+    <div>
+        <strong>Changed At:</strong> @workHistory.ChangedAt
+    </div>
+
+    <div class="mt-3">
+        <button class="btn btn-primary" @onclick="EditWorkHistory">Edit</button>
+        <button class="btn btn-secondary" @onclick="GoBack">Go Back</button>
+    </div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private WorkHistoryVM workHistory;
+
+    protected override async Task OnInitializedAsync()
+    {
+        workHistory = await WorkHistoryService.GetByIdAsync(Id);
+    }
+
+    private void EditWorkHistory()
+    {
+        Navigation.NavigateTo($"/workhistory/edit/{Id}"); 
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/workhistory/list"); 
+    }
+}

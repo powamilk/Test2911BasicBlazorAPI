@@ -1,0 +1,67 @@
+﻿@page "/workhistory/list"
+@using BUS.ViewModel.WorkHistory
+@using PL.WorkHistory.Service
+@inject IWorkHistoryService WorkHistoryService
+@inject NavigationManager Navigation
+
+<PageTitle>WorkHistory List</PageTitle>
+
+<h3>WorkHistory List</h3>
+
+<button class="btn btn-primary mb-3" @onclick="CreateNewWorkHistory">Create New</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>WorkId</th>
+            <th>UserId</th>
+            <th>Previous Status</th>
+            <th>Current Status</th>
+            <th>Changed At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var workHistory in workHistories)
+        {
+            <tr>
+                <td>@workHistory.HistoryId</td>
+                <td>@workHistory.WorkId</td>
+                <td>@workHistory.UserId</td>
+                <td>@workHistory.PreviousStatus</td>
+                <td>@workHistory.CurrentStatus</td>
+                <td>@workHistory.ChangedAt</td>
+                <td>
+                    <button class="btn btn-info" @onclick="() => ViewDetails(workHistory.HistoryId)">View</button>
+                    <button class="btn btn-danger" @onclick="() => Delete(workHistory.HistoryId)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<WorkHistoryVM> workHistories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        workHistories = await WorkHistoryService.GetAllAsync();
+    }
+
+    private void CreateNewWorkHistory()
+    {
+        Navigation.NavigateTo("/workhistory/create");
+    }
+
+    private async Task Delete(int id)
+    {
+        await WorkHistoryService.DeleteAsync(id);
+        workHistories = await WorkHistoryService.GetAllAsync();
+    }
+
+    private void ViewDetails(int id)
+    {
+        Navigation.NavigateTo($"/workhistory/details/{id}");
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BUS.ViewModel;
 using BUS.ViewModel.User;
+using BUS.ViewModel.WorkHistory;
 using DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace BUS
             CreateMap<User, UserVM>().ReverseMap();
             CreateMap<UserCreateVM, User>().ReverseMap();
             CreateMap<UserUpdateVM, User>().ReverseMap();
+            CreateMap<WorkHistoryCreateVM, WorkHistory>().ReverseMap();
+            CreateMap<WorkHistoryUpdateVM, WorkHistory>().ReverseMap();
+            CreateMap<WorkHistory, WorkHistoryVM>().ReverseMap();
         }
     }
 }

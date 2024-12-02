@@ -1,0 +1,55 @@
+﻿@page "/workhistory/create"
+@using BUS.ViewModel.WorkHistory
+@using PL.WorkHistory.Service
+@inject IWorkHistoryService WorkHistoryService
+@inject NavigationManager Navigation
+
+<PageTitle>Create WorkHistory</PageTitle>
+
+<h3>Create WorkHistory</h3>
+
+<EditForm Model="@workHistoryCreateVM" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="WorkId">WorkId</label>
+        <InputNumber id="WorkId" class="form-control" @bind-Value="workHistoryCreateVM.WorkId" />
+    </div>
+    <div class="form-group">
+        <label for="UserId">UserId</label>
+        <InputNumber id="UserId" class="form-control" @bind-Value="workHistoryCreateVM.UserId" />
+    </div>
+    <div class="form-group">
+        <label for="PreviousStatus">Previous Status</label>
+        <InputText id="PreviousStatus" class="form-control" @bind-Value="workHistoryCreateVM.PreviousStatus" />
+    </div>
+    <div class="form-group">
+        <label for="CurrentStatus">Current Status</label>
+        <InputText id="CurrentStatus" class="form-control" @bind-Value="workHistoryCreateVM.CurrentStatus" />
+    </div>
+    <div class="form-group">
+        <label for="ChangedAt">Changed At</label>
+        <InputDate id="ChangedAt" class="form-control" @bind-Value="workHistoryCreateVM.ChangedAt" />
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" @onclick="GoBack">Go Back</button>
+    </div>
+</EditForm>
+
+@code {
+    private WorkHistoryCreateVM workHistoryCreateVM = new WorkHistoryCreateVM();
+
+    private async Task HandleValidSubmit()
+    {
+        await WorkHistoryService.CreateAsync(workHistoryCreateVM);
+        Navigation.NavigateTo("/workhistory/list");
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/workhistory/list");
+    }
+}

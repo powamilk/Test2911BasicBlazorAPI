@@ -1,0 +1,75 @@
+﻿@page "/workhistory/edit/{Id}"
+@using BUS.ViewModel.WorkHistory
+@using PL.WorkHistory.Service
+@inject IWorkHistoryService WorkHistoryService
+@inject NavigationManager Navigation
+
+<PageTitle>Edit WorkHistory</PageTitle>
+
+<h3>Edit WorkHistory</h3>
+
+<EditForm Model="@workHistoryUpdateVM" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="WorkId">WorkId</label>
+        <InputNumber id="WorkId" class="form-control" @bind-Value="workHistoryUpdateVM.WorkId" />
+    </div>
+    <div class="form-group">
+        <label for="UserId">UserId</label>
+        <InputNumber id="UserId" class="form-control" @bind-Value="workHistoryUpdateVM.UserId" />
+    </div>
+    <div class="form-group">
+        <label for="PreviousStatus">Previous Status</label>
+        <InputText id="PreviousStatus" class="form-control" @bind-Value="workHistoryUpdateVM.PreviousStatus" />
+    </div>
+    <div class="form-group">
+        <label for="CurrentStatus">Current Status</label>
+        <InputText id="CurrentStatus" class="form-control" @bind-Value="workHistoryUpdateVM.CurrentStatus" />
+    </div>
+    <div class="form-group">
+        <label for="ChangedAt">Changed At</label>
+        <InputDate id="ChangedAt" class="form-control" @bind-Value="workHistoryUpdateVM.ChangedAt" />
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="GoBack">Go Back</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private WorkHistoryVM workHistory;
+    private WorkHistoryUpdateVM workHistoryUpdateVM;
+
+    protected override async Task OnInitializedAsync()
+    {
+        workHistory = await WorkHistoryService.GetByIdAsync(Id);
+        if (workHistory != null)
+        {
+            workHistoryUpdateVM = new WorkHistoryUpdateVM
+                {
+                    WorkId = workHistory.WorkId,
+                    UserId = workHistory.UserId,
+                    PreviousStatus = workHistory.PreviousStatus,
+                    CurrentStatus = workHistory.CurrentStatus,
+                    ChangedAt = workHistory.ChangedAt
+                };
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await WorkHistoryService.UpdateAsync(Id, workHistoryUpdateVM);
+        Navigation.NavigateTo("/workhistory/list");
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo($"/workhistory/details/{Id}"); 
+    }
+}
